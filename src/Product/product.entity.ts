@@ -14,4 +14,7 @@ export class ProductDB {
 
   @Column()
   price: number;
+
+  // @Column()
+  // Updatedprice: number;
 }
