@@ -1,69 +1,73 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { title } from "process";
-import { Repository } from "typeorm";
-import { ProductDB } from "./product.entity";
+import Store from "src/store/store.entity";
+import { getConnection, Repository } from "typeorm";
+// import { ProductDB } from "./product.entity";
+import { product_db } from "./product.entity";
 import { Product } from "./product.model";
 
 @Injectable()
 export class ProductService {
-    constructor(@InjectRepository(ProductDB)
-    private productRepository: Repository<ProductDB>,) { }
 
-    products: Product[] = [];
+    constructor(@InjectRepository(product_db)
+    private productRepository: Repository<product_db>,) { }
 
-    insertProduct(title: string, desc: string, price: number) {
-        const prodId = Math.round(Math.random() * 10).toString();
-        const newProduct = new Product(prodId, title, desc, price);
-        this.products.push(newProduct);
-        //  return title;
-        return newProduct;
 
+    insertProduct(product: product_db) {
+       return this.productRepository.save(product);
     }
 
-    getProducts() {
-        return [...this.products];
+    getProducts(): Promise<product_db[]>{
+        return this.productRepository.find()
     }
 
     getSingleProduct(prodId: string) {
-        const product = this.findProduct(prodId)[0];
+        const product = this.productRepository.findOne(prodId)
         return { ...product };
-
     }
 
 
-    getUpdateProduct(prodId: string, prodTitle: string, prodDesc: string, prodPrice: number) {
-        const [product, index] = this.findProduct(prodId);
-        const updatedProduct = { ...product };
-        if (prodTitle) {
-            updatedProduct.title = prodTitle;
-            console.log("title found");
-        }
-        if (prodDesc) {
-            updatedProduct.description = prodDesc;
-            console.log("description found");
-        }
-        if (prodPrice) {
-            updatedProduct.price = prodPrice;
-            console.log("price found");
-        }
-        this.products[index] = updatedProduct;
+    async getUpdateProduct(prodId: string, product: product_db): Promise<any> {
+        const checkdata = this.productRepository.findOne(prodId);
+        console.log ('find value..', checkdata ) ;
 
+        if (!checkdata) {
+            throw new HttpException("ID not found", HttpStatus.NOT_FOUND);
+            
+        }
+        await getConnection()
+        .createQueryBuilder()
+        .update(product_db)
+        .set(product)
+        .where({id: prodId})
+        .execute();
+    
+        return product;
+            
+
+        
+        
+        // return this.productRepository.update(prodId, product);
     }
 
-    DeleteProduct(prodId: string) {
+    async DeleteProduct(prodId: string) {
 
-        const index = this.findProduct(prodId)[1];
-        this.products.splice(index, 1);
-    }
+        const index = this.productRepository.findOne({where: prodId});
 
-    private findProduct(id: string): [Product, number] {
-        const productIndex = this.products.findIndex((prod) => prod.id === id);
-        const product = this.products[productIndex];
-        if (!product) {
-            throw new NotFoundException('Could not find product');
+        if (!index){
+            throw new HttpException("ID not found", HttpStatus.NOT_FOUND);
+            
         }
-        return [product, productIndex];
+
+       this.productRepository.delete(prodId)
+       return HttpStatus.OK
     }
+
+    
+
+    findAll(): Promise<product_db[]> {
+        return this.productRepository.find();
+      }
 
 }

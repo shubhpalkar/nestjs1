@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, CacheModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { from } from 'rxjs';
 import { Connection } from 'typeorm';
@@ -6,28 +6,22 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductModule } from './Product/product.module';
 import { ProductService } from './Product/product.service';
-import {ProductDB} from "./Product/product.entity";
+import {product_db} from "./Product/product.entity";
+import { StoreModule } from './store/store.module';
+import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
-  imports: [ProductModule,
-      TypeOrmModule.forRoot({
-        type: 'mysql',
-        host: 'localhost',
-        port: 3306,
-        username: 'root',
-        password: 'root',
-        database: 'test',
-        entities: [ProductDB],
-        synchronize: true,
-        logging: true
-      }),
-    ],
-  
+  imports: [TypeOrmModule.forRoot(),
+      StoreModule,ProductModule,CacheModule.register({
+        store: redisStore,
+        // host: 'localhost',
+        // port: 5003
+      })],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {
-  constructor(private connection: Connection){
+  // constructor(private connection: Connection){}
 
-  }
+  
 }
