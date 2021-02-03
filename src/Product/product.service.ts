@@ -40,14 +40,11 @@ export class ProductService {
         .createQueryBuilder()
         .update(product_db)
         .set(product)
-        .where({id: prodId})
+        .where({"id":prodId})
         .execute();
+        console.log ("Data Updated");
     
         return product;
-            
-
-        
-        
         // return this.productRepository.update(prodId, product);
     }
 
@@ -56,9 +53,9 @@ export class ProductService {
         const index = this.productRepository.findOne({where: prodId});
 
         if (!index){
-            throw new HttpException("ID not found", HttpStatus.NOT_FOUND);
-            
+            throw new HttpException("ID not found", HttpStatus.NOT_FOUND); 
         }
+        console.log("product has been deleted");
 
        this.productRepository.delete(prodId)
        return HttpStatus.OK

@@ -1,9 +1,9 @@
 import { type } from 'os';
 import { Store } from 'src/store/store.entity';
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, JoinColumn, TableForeignKey } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, JoinColumn, TableForeignKey, OneToMany } from 'typeorm';
 import { Product } from './product.model';
 
-@Entity('product_db')
+@Entity('productD')
 export class product_db {
   
   @PrimaryGeneratedColumn()
@@ -19,8 +19,8 @@ export class product_db {
   price: number;
 
   
-  @ManyToOne(() => Store, storen => storen.storeid)
-  storen: Store
+  @OneToMany(() => Store, storen => storen.Employee)
+  storeE: Store;
 
 }
 

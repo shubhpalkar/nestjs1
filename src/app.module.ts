@@ -8,15 +8,18 @@ import { ProductModule } from './Product/product.module';
 import { ProductService } from './Product/product.service';
 import {product_db} from "./Product/product.entity";
 import { StoreModule } from './store/store.module';
-import * as redisStore from 'cache-manager-redis-store';
+import { RackModule } from './rack/rack.module';
+// import * as redisStore from 'cache-manager-redis-store';
 
 @Module({
   imports: [TypeOrmModule.forRoot(),
-      StoreModule,ProductModule,CacheModule.register({
-        store: redisStore,
-        // host: 'localhost',
-        // port: 5003
-      })],
+      StoreModule,ProductModule, RackModule,
+      // CacheModule.register({
+      //   store: redisStore,
+      //   // host: 'localhost',
+      //   // port: 5003
+      // })],
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
