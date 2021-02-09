@@ -3,7 +3,6 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { title } from "process";
 import Store from "src/store/store.entity";
 import { getConnection, Repository } from "typeorm";
-// import { ProductDB } from "./product.entity";
 import { product_db } from "./product.entity";
 import { Product } from "./product.model";
 
@@ -68,3 +67,4 @@ export class ProductService {
       }
 
 }
+

@@ -3,7 +3,7 @@ import { product_db } from "src/Product/product.entity";
 import { BaseEntity, Column, Entity, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 
-@Entity('StoreD')
+@Entity('Store')
 export class Store extends BaseEntity {
 
     @PrimaryGeneratedColumn()

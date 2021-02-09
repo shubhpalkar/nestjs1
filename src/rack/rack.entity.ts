@@ -5,7 +5,7 @@ import Store from "src/store/store.entity";
 import { Column, Entity, Index, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, TableForeignKey } from "typeorm";
 import { ForeignKeyMetadata } from "typeorm/metadata/ForeignKeyMetadata";
 
-@Entity('rackD')
+@Entity('rack')
 export class RackEntity {
     @PrimaryGeneratedColumn()
     rackid: number
